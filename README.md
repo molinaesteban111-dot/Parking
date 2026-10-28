@@ -146,3 +146,17 @@ python -c "import gymnasium; print(gymnasium.__version__)"
 - Implementar colisiones y condiciones de terminación.
 - Diseñar un agente base para comparar políticas.
 - Ejecutar cinco transiciones iniciales y registrar sus métricas.
+
+## Agente Q-learning
+
+El archivo `q_learning.py` contiene el primer agente de aprendizaje por refuerzo.
+
+Como el ambiente usa observaciones continuas y Q-learning tabular necesita estados discretos, el agente convierte la posición, orientación y velocidad en intervalos. La tabla Q aprende el valor de cada combinación de estado y acción.
+
+El agente utiliza exploración epsilon-greedy: al comienzo explora muchas acciones y reduce gradualmente `epsilon` para aprovechar lo aprendido. El entrenamiento básico se ejecuta con:
+
+```bash
+python q_learning.py
+```
+
+Esto genera `q_table.npy` con los valores aprendidos. Los parámetros principales son la tasa de aprendizaje, el factor de descuento, el epsilon mínimo y la cantidad de episodios.
