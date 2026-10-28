@@ -88,6 +88,43 @@ Se recomienda medir:
 4. Ejecutar episodios de prueba.
 5. Comparar resultados y ajustar las condiciones.
 
+## Ambiente implementado
+
+El archivo `parking_env.py` contiene el primer ambiente funcional compatible con Gymnasium.
+
+### Estado
+
+La observación contiene seis valores:
+
+1. Posición `x` del vehículo.
+2. Posición `y` del vehículo.
+3. Orientación.
+4. Velocidad.
+5. Error de posición en `x` respecto al objetivo.
+6. Error de posición en `y` respecto al objetivo.
+
+### Acciones
+
+El espacio de acciones es discreto:
+
+| Acción | Comportamiento |
+| --- | --- |
+| `0` | Avanzar |
+| `1` | Retroceder |
+| `2` | Girar a la izquierda |
+| `3` | Girar a la derecha |
+| `4` | Frenar |
+
+### Recompensa y terminación
+
+El agente recibe una recompensa proporcional a la reducción de la distancia al cupo y un costo pequeño por cada paso. Las colisiones reciben una penalización fuerte y estacionarse correctamente entrega un bono.
+
+El episodio termina cuando el vehículo llega al cupo o colisiona. También se trunca al alcanzar el número máximo de pasos.
+
+### Validación
+
+El ambiente fue validado con `gymnasium.utils.env_checker.check_env`.
+
 ## Entorno Python
 
 El proyecto usa el entorno virtual ubicado en `../.venv`. Para activarlo:
