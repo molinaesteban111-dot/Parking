@@ -92,6 +92,8 @@ Se recomienda medir:
 
 El archivo `parking_env.py` contiene el primer ambiente funcional compatible con Gymnasium.
 
+`pybullet_env.py` contiene la versión 3D física. Usa cuerpos rígidos, gravedad, fuerzas, torques y detección de contactos. Para instalar PyBullet en Python 3.14 puede ser necesario tener `g++` instalado; en Python 3.12/3.13 normalmente existe un paquete binario disponible.
+
 ### Estado
 
 La observación contiene seis valores:
