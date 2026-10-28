@@ -9,6 +9,10 @@ from matplotlib.patches import Circle, Rectangle
 
 from parking_env import ParkingEnv
 
+# La tecla "s" se usa para retroceder; Matplotlib la reserva por defecto
+# para abrir el diálogo de guardar la figura.
+plt.rcParams["keymap.save"] = []
+
 
 class ParkingGUI:
     def __init__(self) -> None:
