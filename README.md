@@ -160,3 +160,15 @@ python q_learning.py
 ```
 
 Esto genera `q_table.npy` con los valores aprendidos. Los parámetros principales son la tasa de aprendizaje, el factor de descuento, el epsilon mínimo y la cantidad de episodios.
+
+## Agente con red neuronal
+
+El archivo `neural_q_learning.py` agrega una segunda alternativa: una red neuronal pequeña que aproxima los valores `Q(s, a)` directamente a partir de la observación continua. La red tiene una capa oculta con activación `tanh` y se implementa con NumPy, por lo que no requiere instalar TensorFlow o PyTorch para esta primera comparación.
+
+Se puede ejecutar con:
+
+```bash
+python neural_q_learning.py
+```
+
+Este agente es una línea base educativa. Para una versión más robusta se puede agregar memoria de experiencias, una red objetivo y lotes de entrenamiento.
