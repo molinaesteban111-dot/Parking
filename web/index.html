@@ -1,24 +1,28 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Autonomous Parking 3D</title>
-  <style>body{margin:0;background:#182b3d;color:#fff;font:16px sans-serif}#info{position:absolute;padding:16px}canvas{display:block}</style>
+  <style>body{margin:0;overflow:hidden;background:#182b3d;color:#fff;font:15px Arial,sans-serif}#panel{position:absolute;z-index:2;top:16px;left:16px;padding:14px 18px;background:#102235dd;border-radius:8px;line-height:1.6}button{margin:4px 4px 0 0;padding:7px 12px;border:0;border-radius:4px;cursor:pointer}#status{color:#66e0c2;font-weight:bold}</style>
 </head>
 <body>
-  <div id="info"><strong>Autonomous Parking</strong><br>Visualización 3D del cupo y el vehículo</div>
+  <div id="panel"><strong>Autonomous Parking 3D</strong><br>Estado: <span id="status">iniciando</span><br>Paso: <span id="step">0</span> | Distancia: <span id="distance">--</span><br><button id="pause">Pausar</button><button id="reset">Reiniciar</button></div>
   <script type="module">
     import * as THREE from 'https://unpkg.com/three@0.165.0/build/three.module.js';
-    const scene = new THREE.Scene(); scene.background = new THREE.Color(0x182b3d);
-    const camera = new THREE.PerspectiveCamera(45, innerWidth / innerHeight, .1, 100); camera.position.set(6, 7, 8); camera.lookAt(0,0,0);
-    const renderer = new THREE.WebGLRenderer({antialias:true}); renderer.setSize(innerWidth, innerHeight); document.body.appendChild(renderer.domElement);
-    scene.add(new THREE.HemisphereLight(0xffffff, 0x334455, 2));
-    const floor = new THREE.Mesh(new THREE.BoxGeometry(10,.1,6), new THREE.MeshStandardMaterial({color:0x4b5359})); scene.add(floor);
-    const slot = new THREE.Mesh(new THREE.BoxGeometry(2.2,.02,3), new THREE.MeshStandardMaterial({color:0x27ae60})); slot.position.set(2, .07, 0); scene.add(slot);
-    const car = new THREE.Mesh(new THREE.BoxGeometry(1.2,.6,2), new THREE.MeshStandardMaterial({color:0xff7518})); car.position.set(-2,.4,0); scene.add(car);
-    function animate(){ requestAnimationFrame(animate); renderer.render(scene,camera); } animate();
-    addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
+    const scene=new THREE.Scene();scene.background=new THREE.Color(0x182b3d);
+    const camera=new THREE.PerspectiveCamera(45,innerWidth/innerHeight,.1,100);camera.position.set(6,7,8);camera.lookAt(0,0,0);
+    const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(devicePixelRatio);renderer.setSize(innerWidth,innerHeight);document.body.appendChild(renderer.domElement);
+    scene.add(new THREE.HemisphereLight(0xffffff,0x334455,2));const light=new THREE.DirectionalLight(0xffffff,1.5);light.position.set(3,8,4);scene.add(light);
+    scene.add(new THREE.Mesh(new THREE.BoxGeometry(10,.1,6),new THREE.MeshStandardMaterial({color:0x4b5359})));
+    const target=new THREE.Mesh(new THREE.BoxGeometry(2.2,.02,3),new THREE.MeshStandardMaterial({color:0x27ae60}));target.position.set(2,.07,0);scene.add(target);
+    const edge=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(2.2,.04,3)),new THREE.LineBasicMaterial({color:0xb8ffce}));edge.position.copy(target.position);scene.add(edge);
+    function obstacle(x,z){const o=new THREE.Mesh(new THREE.BoxGeometry(.8,.55,1.2),new THREE.MeshStandardMaterial({color:0xaeb4b8}));o.position.set(x,.33,z);scene.add(o)} obstacle(1,1.6);obstacle(1,-1.6);
+    const car=new THREE.Group();const body=new THREE.Mesh(new THREE.BoxGeometry(1.1,.5,1.8),new THREE.MeshStandardMaterial({color:0xff7518}));body.position.y=.35;car.add(body);const cabin=new THREE.Mesh(new THREE.BoxGeometry(.8,.28,.75),new THREE.MeshStandardMaterial({color:0x233b53}));cabin.position.set(0,.72,-.1);car.add(cabin);scene.add(car);
+    const waypoints=[new THREE.Vector3(-3,0,0),new THREE.Vector3(-.8,0,0),new THREE.Vector3(0,0,.8),new THREE.Vector3(1,0,.8),new THREE.Vector3(1.9,0,.55),new THREE.Vector3(2,0,0)];
+    scene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(waypoints),new THREE.LineBasicMaterial({color:0x30d5ff})));
+    let index=1,step=0,paused=false,finished=false;const status=document.getElementById('status');
+    function reset(){car.position.copy(waypoints[0]);car.rotation.y=0;index=1;step=0;paused=false;finished=false;status.textContent='autónomo';document.getElementById('pause').textContent='Pausar';}
+    function update(delta){if(paused||finished)return;const destination=waypoints[index],direction=destination.clone().sub(car.position);direction.y=0;const distance=direction.length();document.getElementById('distance').textContent=distance.toFixed(2);if(distance<.08){index++;if(index>=waypoints.length){finished=true;status.textContent='¡estacionado!';document.getElementById('distance').textContent='0.00';return;}}const next=waypoints[index].clone().sub(car.position);next.y=0;next.normalize();car.position.addScaledVector(next,Math.min(.9*delta,next.length()));const desired=Math.atan2(next.x,next.z);car.rotation.y+=(desired-car.rotation.y)*Math.min(1,delta*5);step++;document.getElementById('step').textContent=step;}
+    document.getElementById('pause').onclick=()=>{paused=!paused;status.textContent=paused?'pausado':'autónomo';document.getElementById('pause').textContent=paused?'Continuar':'Pausar'};document.getElementById('reset').onclick=reset;addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});reset();let last=performance.now();function animate(now){requestAnimationFrame(animate);const delta=Math.min(.05,(now-last)/1000);last=now;update(delta);renderer.render(scene,camera)}requestAnimationFrame(animate);
   </script>
-</body>
-</html>
+</body></html>
