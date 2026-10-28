@@ -172,3 +172,31 @@ python neural_q_learning.py
 ```
 
 Este agente es una línea base educativa. Para una versión más robusta se puede agregar memoria de experiencias, una red objetivo y lotes de entrenamiento.
+
+## Pruebas, evaluación y visualización
+
+Las pruebas automáticas están en `test_parking.py` y se ejecutan sin dependencias adicionales:
+
+```bash
+python -m unittest test_parking.py -v
+```
+
+La interfaz `run.py` permite entrenar y comparar agentes:
+
+```bash
+python run.py train --agent q --episodes 500
+python run.py train --agent nn --episodes 500
+python run.py evaluate --episodes 30 --output metrics.png
+```
+
+`evaluate.py` compara una política aleatoria, Q-learning y la red neuronal, e informa recompensa media y porcentaje de éxito. También genera una gráfica de métricas.
+
+El ambiente acepta `randomize_target=True`, `noise_std` y una lista de obstáculos `(x, y, radio)` para probar variaciones del mapa, sensores ruidosos y colisiones.
+
+La carpeta `web/` contiene una primera escena 3D en Three.js. Puede abrirse desde un servidor local:
+
+```bash
+python -m http.server 8000 --directory web
+```
+
+Después se visita `http://localhost:8000` en el navegador.

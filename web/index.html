@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Autonomous Parking 3D</title>
+  <style>body{margin:0;background:#182b3d;color:#fff;font:16px sans-serif}#info{position:absolute;padding:16px}canvas{display:block}</style>
+</head>
+<body>
+  <div id="info"><strong>Autonomous Parking</strong><br>Visualización 3D del cupo y el vehículo</div>
+  <script type="module">
+    import * as THREE from 'https://unpkg.com/three@0.165.0/build/three.module.js';
+    const scene = new THREE.Scene(); scene.background = new THREE.Color(0x182b3d);
+    const camera = new THREE.PerspectiveCamera(45, innerWidth / innerHeight, .1, 100); camera.position.set(6, 7, 8); camera.lookAt(0,0,0);
+    const renderer = new THREE.WebGLRenderer({antialias:true}); renderer.setSize(innerWidth, innerHeight); document.body.appendChild(renderer.domElement);
+    scene.add(new THREE.HemisphereLight(0xffffff, 0x334455, 2));
+    const floor = new THREE.Mesh(new THREE.BoxGeometry(10,.1,6), new THREE.MeshStandardMaterial({color:0x4b5359})); scene.add(floor);
+    const slot = new THREE.Mesh(new THREE.BoxGeometry(2.2,.02,3), new THREE.MeshStandardMaterial({color:0x27ae60})); slot.position.set(2, .07, 0); scene.add(slot);
+    const car = new THREE.Mesh(new THREE.BoxGeometry(1.2,.6,2), new THREE.MeshStandardMaterial({color:0xff7518})); car.position.set(-2,.4,0); scene.add(car);
+    function animate(){ requestAnimationFrame(animate); renderer.render(scene,camera); } animate();
+    addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
+  </script>
+</body>
+</html>

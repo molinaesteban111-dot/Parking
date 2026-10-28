@@ -23,9 +23,18 @@ class ParkingEnv(gym.Env[np.ndarray, int]):
 
     metadata = {"render_modes": []}
 
-    def __init__(self, max_steps: int = 200) -> None:
+    def __init__(
+        self,
+        max_steps: int = 200,
+        noise_std: float = 0.0,
+        randomize_target: bool = False,
+        obstacles: list[tuple[float, float, float]] | None = None,
+    ) -> None:
         super().__init__()
         self.max_steps = max_steps
+        self.noise_std = noise_std
+        self.randomize_target = randomize_target
+        self.obstacles = obstacles or [(1.0, 1.0, 0.35), (1.0, -1.0, 0.35)]
 
         # [x, y, orientación, velocidad, error_x, error_y]
         self.observation_space = spaces.Box(
@@ -43,7 +52,7 @@ class ParkingEnv(gym.Env[np.ndarray, int]):
 
     def _get_obs(self) -> np.ndarray:
         error = self.target - self.position
-        return np.array(
+        observation = np.array(
             [
                 self.position[0],
                 self.position[1],
@@ -54,6 +63,9 @@ class ParkingEnv(gym.Env[np.ndarray, int]):
             ],
             dtype=np.float32,
         )
+        if self.noise_std > 0:
+            observation += self.np_random.normal(0, self.noise_std, size=observation.shape)
+        return np.clip(observation, self.observation_space.low, self.observation_space.high)
 
     def _distance_to_target(self) -> float:
         return float(np.linalg.norm(self.target - self.position))
@@ -66,6 +78,8 @@ class ParkingEnv(gym.Env[np.ndarray, int]):
     ) -> tuple[np.ndarray, dict[str, Any]]:
         super().reset(seed=seed)
         self.position = np.array([0.0, 0.0], dtype=np.float32)
+        if self.randomize_target:
+            self.target = self.np_random.uniform([-2.0, -2.0], [3.0, 2.0]).astype(np.float32)
         self.heading = 0.0
         self.velocity = 0.0
         self.steps = 0
@@ -97,6 +111,10 @@ class ParkingEnv(gym.Env[np.ndarray, int]):
         distance = self._distance_to_target()
         reached_target = distance < 0.25 and abs(self.velocity) < 0.2
         collision = bool(np.any(np.abs(self.position) > 10.0))
+        collision = collision or any(
+            np.linalg.norm(self.position - np.array(obstacle[:2])) < obstacle[2]
+            for obstacle in self.obstacles
+        )
         terminated = reached_target or collision
         truncated = self.steps >= self.max_steps and not terminated
 
