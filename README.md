@@ -1,5 +1,28 @@
 # Autonomous Parking
 
+## Diseño 3D — Parking Atelier
+
+La escena web tiene vehículos con carrocería redondeada, pintura metalizada,
+vidrios, espejos, luces y ruedas animadas. El campus incorpora asfalto procedural,
+señalización, árboles, cargadores eléctricos, sombras y un ambiente nocturno.
+Puedes orbitar con el ratón, acercar con la rueda, cambiar a vista superior o
+seguir el vehículo. El panel permite pausar, reiniciar y ocultar el recorrido.
+
+```bash
+cd /home/esteban/code/parking
+source venv-pybullet/bin/activate
+python -m http.server 8001 --bind 127.0.0.1 --directory web
+```
+
+Abre http://localhost:8001 y recarga con Ctrl+Shift+R si ves la versión anterior.
+Se requiere internet para los módulos Three.js; las fuentes tienen una alternativa
+local del navegador. Los modelos y texturas del parqueadero se generan en código.
+
+**Alcance actual:** el navegador reproduce una trayectoria programada. No recibe
+el estado de PyBullet ni ejecuta un agente entrenado; las demostraciones Python
+y web siguen siendo independientes. Completar el recorrido visual no valida
+colisiones ni éxito físico del ambiente Gymnasium.
+
 Proyecto educativo para diseñar y evaluar un agente que estacione un vehículo de forma autónoma dentro de un cupo delimitado.
 
 ## Objetivo
