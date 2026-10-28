@@ -94,6 +94,22 @@ El archivo `parking_env.py` contiene el primer ambiente funcional compatible con
 
 `pybullet_env.py` contiene la versión 3D física. Usa cuerpos rígidos, gravedad, fuerzas, torques y detección de contactos. Para instalar PyBullet en Python 3.14 puede ser necesario tener `g++` instalado; en Python 3.12/3.13 normalmente existe un paquete binario disponible.
 
+Para abrir la ventana física de PyBullet:
+
+```bash
+source venv-pybullet/bin/activate
+python pybullet_demo.py
+```
+
+Para ver la visualización 3D diseñada en Three.js:
+
+```bash
+source venv-pybullet/bin/activate
+python3 -m http.server 8000 --directory web
+```
+
+Abre `http://localhost:8000`. Esta versión muestra el vehículo con carrocería, cabina, iluminación, cupo, obstáculos, trayectoria, estado, pausa y reinicio.
+
 ### Estado
 
 La observación contiene seis valores:
