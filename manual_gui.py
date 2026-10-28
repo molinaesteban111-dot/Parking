@@ -59,18 +59,19 @@ class ParkingGUI:
 
     def on_key(self, event) -> None:
         actions = {"w": 0, "s": 1, "a": 2, "d": 3, "b": 4}
-        if event.key == "q":
+        key = event.key.lower() if isinstance(event.key, str) else event.key
+        if key == "q":
             plt.close(self.figure)
             return
-        if event.key == "r":
+        if key == "r":
             self.observation, self.info = self.env.reset()
             self.step_count = 0
             self.draw()
             return
-        if event.key not in actions:
+        if key not in actions:
             return
 
-        self.observation, _, terminated, truncated, self.info = self.env.step(actions[event.key])
+        self.observation, _, terminated, truncated, self.info = self.env.step(actions[key])
         self.step_count += 1
         self.draw()
         if terminated or truncated:
