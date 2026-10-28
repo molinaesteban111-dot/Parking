@@ -39,8 +39,15 @@ class ParkingGUI:
             self.axis.add_patch(Circle((obstacle_x, obstacle_y), radius, color="crimson", alpha=0.75))
 
         x, y, heading, velocity, _, _ = self.observation
-        car = Rectangle((x - 0.3, y - 0.5), 0.6, 1.0, color="darkorange", alpha=0.9)
-        car.set_rotation(math.degrees(heading), rotation_point="center")
+        car = Rectangle(
+            (x - 0.3, y - 0.5),
+            0.6,
+            1.0,
+            angle=math.degrees(heading),
+            rotation_point="center",
+            color="darkorange",
+            alpha=0.9,
+        )
         self.axis.add_patch(car)
         self.axis.arrow(x, y, 0.7 * math.cos(heading), 0.7 * math.sin(heading), color="black", width=0.025)
         self.axis.text(
