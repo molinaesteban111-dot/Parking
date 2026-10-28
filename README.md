@@ -200,3 +200,23 @@ python -m http.server 8000 --directory web
 ```
 
 Después se visita `http://localhost:8000` en el navegador.
+
+## Control manual por terminal
+
+Para mover el vehículo manualmente desde la CLI:
+
+```bash
+python manual_cli.py
+```
+
+Controles disponibles:
+
+| Tecla | Acción |
+| --- | --- |
+| `w` | Avanzar |
+| `s` | Retroceder |
+| `a` | Girar a la izquierda |
+| `d` | Girar a la derecha |
+| `b` | Frenar |
+| `r` | Reiniciar el episodio |
+| `q` | Salir |
