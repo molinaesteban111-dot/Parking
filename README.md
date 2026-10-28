@@ -220,3 +220,13 @@ Controles disponibles:
 | `b` | Frenar |
 | `r` | Reiniciar el episodio |
 | `q` | Salir |
+
+## Interfaz gráfica manual
+
+Para visualizar el ambiente 2D y controlar el vehículo con el teclado:
+
+```bash
+python manual_gui.py
+```
+
+Se abrirá una ventana con el cupo verde, los obstáculos rojos y el vehículo naranja. Haz clic en la ventana para activar los controles `w`, `s`, `a`, `d`, `b`, `r` y `q`.
